@@ -1,19 +1,25 @@
 plugins {
     id 'java'
+    id 'application'
 }
 
-group = 'pl.marcinzygmunt'
-version = '1.0-SNAPSHOT'
+group = 'demo'
+version = '1.0.0'
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(21)
+    }
+}
 
 repositories {
     mavenCentral()
 }
 
 dependencies {
-    testImplementation platform('org.junit:junit-bom:5.10.0')
-    testImplementation 'org.junit.jupiter:junit-jupiter'
+    implementation 'org.processing:core:3.3.7'
 }
 
-test {
-    useJUnitPlatform()
+application {
+    mainClass = 'demo.MainApp'
 }

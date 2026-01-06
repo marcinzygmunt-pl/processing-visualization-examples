@@ -1,9 +1,5 @@
 package pl.marcinzygmunt;
 
-package demo.ml;
-
-import processing.core.PVector;
-
 import java.util.List;
 
 public class LinearRegressionModel {
@@ -12,7 +8,7 @@ public class LinearRegressionModel {
     private float b;
 
     private float learningRate;
-    private float errorThreshold;
+    private final float errorThreshold;
 
     private int currentIndex = 0;
     private boolean converged = false;
@@ -25,18 +21,21 @@ public class LinearRegressionModel {
 
     public void reset() {
         a = (float) (Math.random() * 2 - 1);
-        b = (float) (Math.random() * 200);
+        b = (float) (Math.random() * 2 - 1);
         currentIndex = 0;
         converged = false;
     }
 
-    public void step(List<PVector> points) {
-        if (points.isEmpty() || converged) return;
+    /**
+     * One SGD step.
+     * Data must be normalized to [-0.5, 0.5]
+     */
+    public void step(List<float[]> data) {
+        if (data.isEmpty() || converged) return;
 
-        PVector p = points.get(currentIndex);
-
-        float x = p.x;
-        float y = p.y;
+        float[] p = data.get(currentIndex);
+        float x = p[0];
+        float y = p[1];
 
         float yPred = predict(x);
         float error = y - yPred;
@@ -44,11 +43,12 @@ public class LinearRegressionModel {
         a += error * x * learningRate;
         b += error * learningRate;
 
+        // stop condition
         if (Math.abs(error) < errorThreshold) {
             converged = true;
         }
 
-        currentIndex = (currentIndex + 1) % points.size();
+        currentIndex = (currentIndex + 1) % data.size();
     }
 
     public float predict(float x) {
@@ -66,5 +66,12 @@ public class LinearRegressionModel {
     public float getB() {
         return b;
     }
-}
 
+    public float getLearningRate() {
+        return learningRate;
+    }
+
+    public void setLearningRate(float learningRate) {
+        this.learningRate = learningRate;
+    }
+}
